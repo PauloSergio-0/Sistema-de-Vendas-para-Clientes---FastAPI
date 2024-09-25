@@ -88,19 +88,17 @@ class Database_manipulation:
             df_cliente = pd.read_csv(StringIO(data_file.decode('utf-8')),
                                     sep=',',
                                     dtype = {
-                                        "ID": "string",
+                                        "ID": "int32",
                                         "Nome": "string",
                                         "Endereço": "string",
                                         "Contato": "string"
                                     })
             
-            for index, row in df_cliente.iterrows():
-                content = (row.iloc[0], row.iloc[1], row.iloc[2], row.iloc[3])
-                data_cliente.append(content)
-                
             try:
-                for line_cliente in data_cliente:
-                    self.cursor.execute(sql_insert_client, line_cliente)
+                for index, row in df_cliente.iterrows():
+                    content = (row.iloc[0], row.iloc[1], row.iloc[2], row.iloc[3])
+                    
+                    self.cursor.execute(sql_insert_client, content)
                 
                 self.connection.commit()
                 self.close_db()
@@ -112,3 +110,39 @@ class Database_manipulation:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, 
                             detail="Erro de fluxo")
 
+    async def insert_data_produtos(self, File: UploadFile):
+        
+        
+        sql_insert_produto = """INSERT INTO produtos (ID_produto, Nome_produto, Codigo_produto, Categoria_produto, Preco_produto)
+        VALUES (?, ?, ?, ?, ?)"""
+        
+        if self.create_colluns_db() and File.filename.endswith(".csv"):
+            
+            
+            
+            data_file =  await File.read()
+            
+            df_produto = pd.read_csv(StringIO(data_file.decode('utf-8')),
+                                    sep=",",
+                                    dtype={
+                                        "ID": "int32",
+                                        "Nome": "string",
+                                        "Código": "string",
+                                        "Categoria": "string",
+                                        "Preço": "float64"
+                                    })
+            try:
+                for index, row in df_produto.iterrows():
+                    content_produto = (row.iloc[0], row.iloc[1],row.iloc[2],row.iloc[3], row.iloc[4])
+                    
+                    self.cursor.execute(sql_insert_produto, content_produto)
+                self.connection.commit()
+                return{"menssage": "dados inseridos na tabela produtos"}
+            except con.DatabaseError as e:
+                raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                                    detail=f"Erro ua inserir dados: {e}")
+        else:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, 
+                            detail="Erro de fluxo")
+
+            
