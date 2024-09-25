@@ -47,7 +47,7 @@ class Database_manipulation:
             ID_produto INTEGER NOT NULL,
             Qtde_venda INTEGER NOT NULL,
             Data_venda DATETIME NOT NULL,
-            FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID_cliente),
+            FOREIGN KEY (ID_Cliente) REFERENCES Cliente(ID_cliente),
             FOREIGN KEY (ID_produto) REFERENCES Produtos(ID_produto)
         )
         """
@@ -137,6 +137,7 @@ class Database_manipulation:
                     
                     self.cursor.execute(sql_insert_produto, content_produto)
                 self.connection.commit()
+                self.close_db()
                 return{"menssage": "dados inseridos na tabela produtos"}
             except con.DatabaseError as e:
                 raise HTTPException(status.HTTP_400_BAD_REQUEST,
@@ -145,4 +146,38 @@ class Database_manipulation:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, 
                             detail="Erro de fluxo")
 
+    async def insert_data_vendas(self, File: UploadFile):
+        sql_insert_vendas = """
+        INSERT INTO Vendas (ID_Cliente , ID_produto, Qtde_venda, Data_venda) 
+        VALUES (?, ?, ?, ?)
+        """
+        if self.create_colluns_db() and File.filename.endswith(".csv"):
+            
+            file_vendas = await File.read()
+            
+            df_vendas = pd.read_csv(StringIO(file_vendas.decode('utf-8')),
+                                    sep=',',
+                                    dtype={
+                                        "ID do Cliente": "int32",
+                                        "ID do Produto": "int32",
+                                        "Quantidade": "int32",
+                                        "Data da Venda": "string"
+                                    })
+            
+            try:
+                for index, row in df_vendas.iterrows():
+                    content_venda = (row.iloc[0], row.iloc[1], row.iloc[2], row.iloc[3])
+                    
+                    self.cursor.execute(sql_insert_vendas, content_venda)
+                    
+                self.connection.commit()
+                self.close_db()
+                return {"menssage": "Dados inseridos com sucesso"} 
+            except con.DatabaseError as e:
+                raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                            detail= f"Erro ao inserir dados na tabela: {e}")
+        else:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                            detail= "Erro de fluxo")
+            
             

@@ -14,4 +14,6 @@ async def cliente_file(file: UploadFile = File(...)):
 async def produto_file(file: UploadFile = File(...)):
     return await Database_manipulation().insert_data_produtos(file)
 
-# @router.post("/importar-vendas/")
+@router.post("/importar-vendas/")
+async def venda_file(file: UploadFile = File(...)):
+    return await Database_manipulation().insert_data_vendas(file)
