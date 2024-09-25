@@ -64,10 +64,9 @@ class Database_manipulation:
             
             return True
         
-        except con.DatabaseError as error:
-            raise HTTPException(status.HTTP_400_BAD_REQUEST,
-                                detail=f"Error create tables in database error: {error}")
-        
+        except con.DatabaseError:
+            return False
+
         
         
         
@@ -181,3 +180,24 @@ class Database_manipulation:
                             detail= "Erro de fluxo")
             
             
+            
+    def listing_cliente(self):
+        sql_list_cliente = """SELECT * FROM Cliente"""
+        if self.create_colluns_db():
+            
+            list_cliente = []
+            try:
+                self.cursor.execute(sql_list_cliente)
+                data_cliente = self.cursor.fetchall()
+                
+                for item in data_cliente:
+                    content_dict = dict(ID_client =item[0], Nome_cliente = item[1], Endereco_cliente = item[2], Contato_cliente=item[3])
+                    list_cliente.append(content_dict)
+                    
+                return {"Message": list_cliente}
+            except Exception as e:
+                raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                                    detail=f"Erro de fluxo: {e}")
+        else:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                            detail= "Erro de fluxo")
