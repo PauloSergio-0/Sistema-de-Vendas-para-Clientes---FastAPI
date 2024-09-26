@@ -1,3 +1,4 @@
+
 import pandas as pd
 import sqlite3 as con
 import os
@@ -194,6 +195,7 @@ class Database_manipulation:
                     content_dict = dict(ID_client =item[0], Nome_cliente = item[1], Endereco_cliente = item[2], Contato_cliente=item[3])
                     list_cliente.append(content_dict)
                     
+                self.close_db()
                 return {"Message": list_cliente}
             except Exception as e:
                 raise HTTPException(status.HTTP_400_BAD_REQUEST,
@@ -201,3 +203,49 @@ class Database_manipulation:
         else:
             raise HTTPException(status.HTTP_400_BAD_REQUEST,
                             detail= "Erro de fluxo")
+            
+            
+    def listing_produtos(self):
+        sql_list_produtos = """SELECT * FROM Produtos"""
+        
+        if self.create_colluns_db():
+            try:
+                content_produtos = []
+                
+                self.cursor.execute(sql_list_produtos)
+                data_produtos = self.cursor.fetchall()
+
+                for item in data_produtos:
+                    dict_produtos = dict(ID_produto = item[0], Nome_produto = item[1], Codigo_produto = item[2], Categoria_produto = item[3], Preco_produto= item[4])
+                    content_produtos.append(dict_produtos)
+                self.close_db()
+                return {"menssage": content_produtos}
+            except Exception as e:
+                raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                                detail=f"erro: {e}")
+        else:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                                detail="erro de fluxo")
+            
+            
+    def listing_vendas(self):
+        if self.create_colluns_db():
+            sql_list_vendas = """SELECT * FROM Vendas"""
+            
+            try:
+                list_vendas = []
+                
+                self.cursor.execute(sql_list_vendas)
+                data_vendas = self.cursor.fetchall()
+                
+                for item in data_vendas:
+                    dict_vendas = dict(ID_Cliente = item[0], ID_produto = item[1], Qtde_venda = item[2], Data_venda = item[3])
+                    list_vendas.append(dict_vendas)
+                    
+                return {"menssage": list_vendas}
+            except Exception as e:
+                raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                                detail=f"erro: {e}")
+        else:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST,
+                                detail="erro de fluxo")
