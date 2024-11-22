@@ -1,10 +1,11 @@
 import pandas as p
-from fastapi import UploadFile, HTTPException, status, requests
 import io
+from service.api_flask import Api_Flask
+from fastapi import UploadFile, HTTPException, status, requests
 
 class DataManipulation:
     def __init__(self):
-        self.api_Flask = None
+        self.api_Flask = Api_Flask
         
         
     async def upload_Cliente(self, File: UploadFile):
@@ -32,7 +33,7 @@ class DataManipulation:
                         "contato": item['Contato']
                     }
                     
-                    print(json_Cliente)
+                    self.api_Flask.send_datas("Cliente", json_Cliente)
                 
                 return {"mensagem": f"Upload do Arquivo {File.filename} feita com sucesso!!"}
             except Exception as e:
@@ -65,7 +66,7 @@ class DataManipulation:
                                     "categoria":item['Categoria'],
                                     "preco": item["Preço"]
                                     }
-                    
+                    self.api_Flask.send_datas('Produto', json_produto)
 
                 return {"mensagem": f"upload de {File.filename} feito com sucesso!!"}
             except Exception as e:
@@ -95,7 +96,7 @@ class DataManipulation:
                         "qtd": item['Quantidade'],
                         "data": item['Data da Venda']
                     }
-                    print(json_venda)
+                    self.api_Flask.send_datas('Venda', json_venda)
                 
             except Exception as e:
                 raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail= f"erro ao manipular csv {str(e)}") 
