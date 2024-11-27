@@ -1,6 +1,6 @@
 import requests
 from settings.config import Config
-
+from service.auth_service import Authorization_service
 class Api_Flask:
     
     
@@ -16,7 +16,8 @@ class Api_Flask:
             raise ValueError("Erro:" f"Tipo de dados especificado de maneira errada: {type_data} não comtenpla nenhuma condicional")
         
         try:
-            reponse = requests.post(url=url, json=data)
+            headers = Authorization_service.create_access_token()
+            reponse = requests.post(url=url, json=data, headers=headers)
             reponse.raise_for_status()
         except requests.exceptions.HTTPError as e:
             
