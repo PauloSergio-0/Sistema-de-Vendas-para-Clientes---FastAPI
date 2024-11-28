@@ -19,6 +19,7 @@ class Api_Flask:
             headers = Authorization_service.create_access_token()
             reponse = requests.post(url=url, json=data, headers=headers)
             reponse.raise_for_status()
+            return {"detail": reponse.json() }
         except requests.exceptions.HTTPError as e:
             
             raise {"error": f"{str(e)}"}

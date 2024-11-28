@@ -16,3 +16,5 @@ async def produto_file(file: UploadFile = File(...)):
 @router.post("/importar-vendas/")
 async def venda_file(file: UploadFile = File(...)):
     return await DataManipulation().upload_vendas(file)
+
+
