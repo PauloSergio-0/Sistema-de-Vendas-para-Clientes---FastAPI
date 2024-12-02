@@ -14,3 +14,9 @@ def listar_cliente():
     response = requests.get(url= Config().URL_list_cliente)
     
     return response.json()
+
+@router.get('/filter/cliente')
+def filtro_clinte(id_cliente: int):
+    paramentros = {'id_cliente':id_cliente}
+    response = requests.get(url= Config.URL_filter_cliente_id, params = paramentros)
+    return response.json()

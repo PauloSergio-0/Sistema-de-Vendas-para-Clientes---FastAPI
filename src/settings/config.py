@@ -3,6 +3,8 @@ class Config:
     """URLs Cliente"""
     URL_Cliente = 'http://127.0.0.1:5000/cadastro/cliente'
     URL_list_cliente  = 'http://127.0.0.1:5000/listar/cliente'
+    URL_filter_cliente_id  = 'http://127.0.0.1:5000/filtro/cliente'
+    
     
     """URLs produto"""
     URL_Produtos = 'http://127.0.0.1:5000/cadastro/produto'
