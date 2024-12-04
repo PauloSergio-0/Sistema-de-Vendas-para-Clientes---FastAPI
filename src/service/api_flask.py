@@ -5,7 +5,7 @@ class Api_Flask:
     
     
     def send_datas(type_data: str, data: dict):
-        print(data)
+        
         if type_data == 'Cliente':
             url = Config.URL_Cliente
         elif type_data == 'Produto':
