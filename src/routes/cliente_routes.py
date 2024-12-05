@@ -12,7 +12,6 @@ async def cliente_file(file: UploadFile = File(...)):
 @router.get('/listar/cliente')
 def listar_cliente():
     response = requests.get(url= Config().URL_list_cliente)
-    
     return response.json()
 
 @router.get('/filter/cliente')
