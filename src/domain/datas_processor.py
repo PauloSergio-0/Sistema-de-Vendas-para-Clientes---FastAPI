@@ -57,7 +57,7 @@ class DataManipulation:
                     json_produto = {
                                     "id": item['ID'],
                                     "nome": item['Nome'],
-                                    "Codigo": item['Código'],
+                                    "codigo": item['Código'],
                                     "categoria":item['Categoria'],
                                     "preco": item["Preço"]
                                     }
