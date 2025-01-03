@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, APIRouter
+from fastapi import FastAPI, UploadFile, File, APIRouter, HTTPException, status
 import requests
 from domain.datas_processor import DataManipulation
 from settings.config import Config
@@ -15,7 +15,26 @@ def listar_cliente():
     return response.json()
 
 @router.get('/filter/cliente')
-def filtro_clinte(id_cliente: int):
+def filtro_cliente(id_cliente: int):
     paramentros = {'id_cliente':id_cliente}
-    response = requests.get(url= Config.URL_filter_cliente_id, params = paramentros)
+    response = requests.get(url= Config.URL_filter_cliente, params = paramentros)
     return response.json()
+
+@router.patch('/delete/cliente')
+def deletar_cliente(id_cliente: int):
+    paramentros = {'id_cliente':id_cliente}
+    response = requests.patch(url= Config.URL_delete_cliente, params = paramentros)
+    if response.status_code == 201:
+        return response.json()
+    else:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail= response.json())
+
+@router.put('/desactivate/cliente')
+def desativar_cliente(id_cliente: int):
+    paramentros = {'id_cliente':id_cliente}
+    response = requests.put(url= Config.URL_desactivate_cliente, params = paramentros)
+    
+    if response.status_code == 201:
+        return response.json()
+    else:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail= response.json())
