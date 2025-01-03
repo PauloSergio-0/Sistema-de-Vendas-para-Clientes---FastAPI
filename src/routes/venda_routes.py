@@ -35,3 +35,38 @@ def filter_venda(data_venda: str):
         return response.json()
     else:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail= response.json())
+
+@router.patch("/delete/venda")
+def delete_venda(id_venda: int):
+    parametros = {"id_venda": id_venda}
+    
+    response = requests.patch(url= Config.URL_delete_venda, params = parametros)
+    
+    if response.status_code == 201:
+        return response.json()
+    else:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail= response.json())
+    
+@router.put("/cancel/venda")
+def delete_venda(id_venda: int):
+    parametros = {"id_venda": id_venda}
+    
+    response = requests.put(url= Config.URL_cancel_venda, params = parametros)
+    
+    if response.status_code == 201:
+        return response.json()
+    else:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail= response.json())
+    
+    
+@router.post("/sale/venda")
+def sale_vendas(id_cliente: int, id_produto: int, qtd_venda: int):
+    
+    json_venda = {"id_cliente": id_cliente, "id_produto": id_produto, "qtd_venda": qtd_venda}
+    
+    response = requests.post(url = Config.URL_sale_venda_venda, json= json_venda)
+    
+    if response.status_code == 201:
+        return response.json()
+    else:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail= response.json())
